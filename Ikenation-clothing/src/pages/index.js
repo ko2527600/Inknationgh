@@ -12,3 +12,4 @@ export { default as Legal } from './Legal';
 export { default as SizeGuide } from './SizeGuide';
 export { default as Checkout } from './Checkout';
 export { default as OrderConfirmation } from './OrderConfirmation';
+export { default as Account } from './Account';

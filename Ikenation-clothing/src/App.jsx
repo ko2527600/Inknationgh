@@ -21,6 +21,7 @@ import Legal from './pages/Legal'
 import Checkout from './pages/Checkout'
 import OrderConfirmation from './pages/OrderConfirmation'
 import { AdminDashboard, CMSEditor, ProductManagement, AddProduct, EditProduct, Orders, Customers } from './pages/Admin'
+import Account from './pages/Account'
 
 function App() {
   const { fetchProducts } = useProductStore()
@@ -77,6 +78,7 @@ function App() {
                   <Route path="/legal" element={<Legal />} />
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/order-confirmation" element={<OrderConfirmation />} />
+                  <Route path="/account" element={<Account />} />
                 </Routes>
                 <Footer />
               </>

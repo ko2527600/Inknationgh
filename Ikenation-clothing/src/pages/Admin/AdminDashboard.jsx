@@ -1,11 +1,23 @@
+import { useEffect } from 'react';
 import AdminLayout from './AdminLayout';
 import { useCMSStore } from '../../store/cmsData';
 import { useProductStore } from '../../store/useProductStore';
+import { useOrderStore } from '../../store/useOrderStore';
 import { BarChart3, FileText, ShoppingCart, Users } from 'lucide-react';
 
 export default function AdminDashboard() {
   const { resetData } = useCMSStore();
   const { products } = useProductStore();
+  const { orders, fetchOrders } = useOrderStore();
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  // Count unique customers from orders
+  const uniqueCustomerEmails = new Set(
+    orders.map((o) => o.customer?.email).filter(Boolean)
+  );
   
   const handleResetData = () => {
     if (window.confirm('Are you sure you want to reset all CMS data to defaults? This cannot be undone.')) {
@@ -17,9 +29,10 @@ export default function AdminDashboard() {
   const stats = [
     { label: 'Total Pages', value: '13', icon: FileText, color: 'bg-blue-500' },
     { label: 'Products', value: products.length.toString(), icon: ShoppingCart, color: 'bg-green-500' },
-    { label: 'Orders', value: '0', icon: BarChart3, color: 'bg-purple-500' },
-    { label: 'Customers', value: '0', icon: Users, color: 'bg-orange-500' },
+    { label: 'Orders', value: orders.length.toString(), icon: BarChart3, color: 'bg-purple-500' },
+    { label: 'Customers', value: uniqueCustomerEmails.size.toString(), icon: Users, color: 'bg-orange-500' },
   ];
+
 
   return (
     <AdminLayout>

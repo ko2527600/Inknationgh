@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 import { Helmet } from 'react-helmet-async'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, MessageCircle, Instagram, Smartphone, Clock, Facebook } from 'lucide-react'
@@ -19,6 +20,8 @@ export default function Contact() {
     message: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState(null)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -28,14 +31,30 @@ export default function Contact() {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('Form submitted:', formData)
-    setSubmitted(true)
-    setTimeout(() => {
+    setIsSubmitting(true)
+    setSubmitError(null)
+
+    try {
+      await axios.post(
+        `http://${window.location.hostname}:5000/api/messages`,
+        {
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }
+      )
+      setSubmitted(true)
       setFormData({ name: '', email: '', subject: '', message: '' })
-      setSubmitted(false)
-    }, 3000)
+      setTimeout(() => setSubmitted(false), 4000)
+    } catch (error) {
+      console.error('Contact form submission failed:', error)
+      setSubmitError('Sorry, we could not send your message. Please try WhatsApp or email us directly.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // Map CMS contact methods to display format
@@ -249,18 +268,37 @@ export default function Contact() {
                     ></textarea>
                   </motion.div>
 
+                  {/* Error message */}
+                  {submitError && (
+                    <div className="bg-red-50 border border-red-300 text-red-700 text-sm rounded-lg px-4 py-3">
+                      {submitError}
+                    </div>
+                  )}
+
                   {/* Submit Button */}
                   <motion.button
                     initial={{ opacity: 0, y: 10 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4, delay: 0.4 }}
                     viewport={{ once: true }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={isSubmitting ? {} : { scale: 1.02 }}
+                    whileTap={isSubmitting ? {} : { scale: 0.98 }}
                     type="submit"
-                    className="w-full bg-black text-white py-4 rounded-lg font-bold text-lg hover:bg-gray-800 transition-colors"
+                    disabled={isSubmitting}
+                    className={`w-full py-4 rounded-lg font-bold text-lg transition-colors flex items-center justify-center gap-3 ${
+                      isSubmitting
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : 'bg-black text-white hover:bg-gray-800'
+                    }`}
                   >
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      'Send Message'
+                    )}
                   </motion.button>
                 </form>
               )}
