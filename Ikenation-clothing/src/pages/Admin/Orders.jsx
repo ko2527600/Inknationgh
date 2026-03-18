@@ -15,11 +15,11 @@ export default function Orders() {
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      `${order.customer.firstName} ${order.customer.lastName}`
+      (order.id || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      order.customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+      (order.customer?.email || '').toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === 'All' || order.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -113,9 +113,9 @@ export default function Orders() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-medium text-gray-900">
-                          {order.customer.firstName} {order.customer.lastName}
+                          {order.customer?.firstName || 'Unknown'} {order.customer?.lastName || 'Customer'}
                         </p>
-                        <p className="text-sm text-gray-500">{order.customer.email}</p>
+                        <p className="text-sm text-gray-500">{order.customer?.email || 'No Email'}</p>
                       </td>
                       <td className="px-6 py-4 font-semibold text-gray-900">₵{order.total.toFixed(2)}</td>
                       <td className="px-6 py-4">
