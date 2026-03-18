@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const API_URL = `http://${window.location.hostname}:5000/api/products`;
+const API_URL = `${import.meta.env.VITE_API_URL}/products`;
 
 export const useProductStore = create((set, get) => ({
   products: [],

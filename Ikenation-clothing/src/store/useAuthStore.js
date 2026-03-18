@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import axios from 'axios';
 
-const API_URL = `http://${window.location.hostname}:5000/api/auth`;
+const API_URL = `${import.meta.env.VITE_API_URL}/auth`;
 
 export const useAuthStore = create(
   persist(
