@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, X, LogOut } from 'lucide-react';
-import AdminSidebar from './AdminSidebar';
+import { AdminSidebar } from './';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export default function AdminLayout({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Collapse sidebar by default on smaller screens
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
   const navigate = useNavigate();
+  const { user, logout, logoutAsync } = useAuthStore();
 
   const handleLogout = () => {
-    navigate('/');
+    logout();
+    navigate('/login');
   };
+
+
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -29,15 +35,23 @@ export default function AdminLayout({ children }) {
             </button>
             
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Admin Dashboard</span>
+              <div className="flex flex-col items-end mr-2">
+                <span className="text-sm font-bold text-gray-900">
+                  {user ? `${user.firstName} ${user.lastName}` : 'Admin'}
+                </span>
+                <span className="text-[10px] text-gray-500 uppercase tracking-widest font-black">
+                  {user?.role || 'Admin'}
+                </span>
+              </div>
               <button 
                 onClick={handleLogout}
-                className="p-2 hover:bg-gray-100 rounded-lg transition" 
-                title="Exit to Main Site"
+                className="p-2 hover:bg-red-50 rounded-lg transition group" 
+                title="Logout"
               >
-                <LogOut size={20} className="text-gray-600" />
+                <LogOut size={20} className="text-gray-600 group-hover:text-red-500 transition-colors" />
               </button>
             </div>
+
           </div>
         </header>
 

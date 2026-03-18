@@ -1,13 +1,16 @@
 import express from 'express';
 import { createOrder, getOrders, updateOrderStatus } from '../controllers/orderController.js';
+import { protect, admin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+
 router.route('/')
   .post(createOrder)
-  .get(getOrders); // In production, getOrders should have an admin middleware
+  .get(protect, admin, getOrders);
 
 router.route('/:id/status')
-  .put(updateOrderStatus); // In production, this should have an admin middleware
+  .put(protect, admin, updateOrderStatus);
+
 
 export default router;

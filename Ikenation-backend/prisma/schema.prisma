@@ -53,3 +53,14 @@ model CMSData {
   pageName String @unique // e.g., 'home', 'about'
   data     Json   // Flexible JSON containing heroSlides, trustBar, etc.
 }
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      String   @default("CUSTOMER") // Role based access (ADMIN, CUSTOMER)
+  firstName String?
+  lastName  String?
+  createdAt DateTime @default(now())
+}
+

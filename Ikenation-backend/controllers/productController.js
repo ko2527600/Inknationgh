@@ -1,4 +1,21 @@
 import prisma from '../config/prisma.js';
+import { cloudinary } from '../config/cloudinary.js';
+
+// Helper to upload base64 to Cloudinary
+const uploadToCloudinary = async (base64) => {
+  if (!base64 || typeof base64 !== 'string' || !base64.startsWith('data:image/')) {
+    return base64; // Already a URL or not an image
+  }
+  try {
+    const uploadResponse = await cloudinary.uploader.upload(base64, {
+      folder: 'ikenation_products',
+    });
+    return uploadResponse.secure_url;
+  } catch (error) {
+    console.error('Cloudinary Upload Error:', error);
+    return base64; // Fallback to original if upload fails
+  }
+};
 
 // @desc    Fetch all products
 // @route   GET /api/products
@@ -38,10 +55,18 @@ export const getProductById = async (req, res) => {
 // @access  Private/Admin (Will lock down later)
 export const createProduct = async (req, res) => {
   try {
-    const { name, price, originalPrice, category, description, image, images, stock, badge, sizes, colors } = req.body;
+    let { name, price, originalPrice, category, description, image, images, stock, badge, sizes, colors } = req.body;
 
     console.log(`[CREATE PRODUCT] Received request for: ${name}`);
-    console.log(`[CREATE PRODUCT] Received images array of length: ${images ? images.length : 0}`);
+    
+    // Process images: Upload Base64 to Cloudinary
+    if (image) {
+      image = await uploadToCloudinary(image);
+    }
+    
+    if (images && Array.isArray(images)) {
+      images = await Promise.all(images.map(img => uploadToCloudinary(img)));
+    }
 
     const newProduct = await prisma.product.create({
       data: {
@@ -50,7 +75,7 @@ export const createProduct = async (req, res) => {
         originalPrice: originalPrice ? parseFloat(originalPrice) : null,
         category,
         description,
-        image,
+        image: image || '',
         images: images || [],
         stock: parseInt(stock),
         badge,
@@ -61,6 +86,7 @@ export const createProduct = async (req, res) => {
 
     res.status(201).json(newProduct);
   } catch (error) {
+    console.error('Create Product Error:', error);
     res.status(400).json({ message: 'Error creating product', error: error.message });
   }
 };
@@ -70,10 +96,18 @@ export const createProduct = async (req, res) => {
 // @access  Private/Admin
 export const updateProduct = async (req, res) => {
   try {
-    const { name, price, originalPrice, category, description, image, images, stock, badge, sizes, colors } = req.body;
+    let { name, price, originalPrice, category, description, image, images, stock, badge, sizes, colors } = req.body;
 
     console.log(`[UPDATE PRODUCT] Received request for ID: ${req.params.id}`);
-    console.log(`[UPDATE PRODUCT] Received images array of length: ${images ? images.length : 0}`);
+
+    // Process images: Upload Base64 to Cloudinary
+    if (image) {
+      image = await uploadToCloudinary(image);
+    }
+    
+    if (images && Array.isArray(images)) {
+      images = await Promise.all(images.map(img => uploadToCloudinary(img)));
+    }
 
     const updatedProduct = await prisma.product.update({
       where: { id: req.params.id },
@@ -84,7 +118,7 @@ export const updateProduct = async (req, res) => {
         category,
         description,
         image,
-        images,
+        images: images || [],
         stock: stock ? parseInt(stock) : undefined,
         badge,
         sizes,
@@ -94,6 +128,7 @@ export const updateProduct = async (req, res) => {
 
     res.json(updatedProduct);
   } catch (error) {
+    console.error('Update Product Error:', error);
     res.status(404).json({ message: 'Product not found or update failed', error: error.message });
   }
 };

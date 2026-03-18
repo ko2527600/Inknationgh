@@ -6,6 +6,8 @@ import prisma from './config/prisma.js';
 import productRoutes from './routes/productRoutes.js';
 import cmsRoutes from './routes/cmsRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,6 +34,8 @@ checkDB();
 app.use('/api/products', productRoutes);
 app.use('/api/cms', cmsRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/auth', authRoutes);
+
 
 // Basic Route to verifying server is running
 app.get('/', (req, res) => {

@@ -39,29 +39,30 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="shrink-0">
+          <div className="shrink-0 max-w-[50%] overflow-hidden">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-1.5 sm:gap-2 hover:opacity-80 transition-opacity"
             >
               <img 
                 src="/ike%20nation.jpeg" 
                 alt="IkeNation Logo" 
-                className="h-10 sm:h-12 w-auto object-contain rounded-md" 
+                className="h-8 sm:h-12 w-auto object-contain rounded-md" 
               />
-              <span className="text-xl sm:text-2xl font-bold bg-linear-to-r from-black to-gray-600 bg-clip-text text-transparent">
-                IkeNation Clothing
+              <span className="text-[14px] xs:text-base sm:text-2xl font-black bg-gradient-to-r from-black via-gray-700 to-black bg-clip-text text-transparent whitespace-nowrap tracking-tight">
+                IkeNation
+                <span className="hidden xs:inline"> Clothing</span>
               </span>
             </button>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {navLinks.map((link) => (
               <button
                 key={link.label}
                 onClick={() => navigate(link.href)}
-                className="text-gray-700 hover:text-black transition-colors duration-200 text-sm font-medium"
+                className="text-gray-700 hover:text-black transition-colors duration-200 text-sm font-semibold tracking-wide uppercase text-[11px]"
               >
                 {link.label}
               </button>
@@ -69,7 +70,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-1 sm:gap-4">
             {/* Search Bar */}
             <div className="relative hidden sm:block">
               <AnimatePresence>
@@ -126,17 +127,22 @@ export default function Navbar() {
                   setIsSearchOpen(!isSearchOpen)
                   if (isSearchOpen) setSearchQuery('')
                 }}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Search"
               >
-                <Search size={20} className="text-gray-700" />
+                <Search size={18} className="text-gray-700 sm:w-[20px] sm:h-[20px]" />
               </button>
             </div>
 
             {/* Wishlist */}
-            <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <Heart size={20} className="text-gray-700" />
+            <button 
+              className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Wishlist"
+              onClick={() => navigate('/account')}
+            >
+              <Heart size={18} className="text-gray-700 sm:w-[20px] sm:h-[20px]" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                <span className="absolute top-0 right-0 sm:top-1 sm:right-1 bg-red-500 text-white text-[9px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-black">
                   {wishlistCount}
                 </span>
               )}
@@ -145,37 +151,40 @@ export default function Navbar() {
             {/* Cart */}
             <button
               onClick={toggleCart}
-              className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              title="Cart"
             >
-              <ShoppingCart size={20} className="text-gray-700" />
+              <ShoppingCart size={18} className="text-gray-700 sm:w-[20px] sm:h-[20px]" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                <span className="absolute top-0 right-0 sm:top-1 sm:right-1 bg-black text-white text-[9px] rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center font-black">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            {/* User Profile */}
+            {/* User Profile - Hidden on very small mobile to save space, redundant with menu if we put it there */}
             <button
               onClick={() => navigate('/account')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors hidden sm:flex"
               title="My Account"
             >
-              <User size={20} className="text-gray-700" />
+              <User size={18} className="text-gray-700 sm:w-[20px] sm:h-[20px]" />
             </button>
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="md:hidden p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Toggle Menu"
             >
               {isMobileMenuOpen ? (
-                <X size={20} className="text-gray-700" />
+                <X size={20} className="text-gray-900" />
               ) : (
-                <Menu size={20} className="text-gray-700" />
+                <Menu size={20} className="text-gray-900" />
               )}
             </button>
           </div>
+
         </div>
 
         {/* Mobile Menu */}
