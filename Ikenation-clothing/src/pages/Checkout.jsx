@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Lock, Check, ChevronRight, ArrowLeft } from 'lucide-react'
+import { Lock, Check, ChevronRight, ArrowLeft, MessageCircle } from 'lucide-react'
 import { useStore } from '../store/useStore'
 import { useOrderStore } from '../store/useOrderStore'
+import { useCMSStore } from '../store/cmsData'
 
 export default function Checkout() {
   const navigate = useNavigate()
   const { cart, clearCart } = useStore()
   const { addOrder } = useOrderStore()
+  const { cmsData } = useCMSStore()
   const [step, setStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formData, setFormData] = useState({
@@ -43,9 +45,9 @@ export default function Checkout() {
 
   const handlePlaceOrder = async () => {
     setIsSubmitting(true)
-    const orderId = `ORD-${Date.now()}`
+    const orderId = `ORD-${Date.now().toString().slice(-6)}${Math.floor(10 + Math.random() * 90)}` 
     const newOrder = {
-      orderId: orderId, // using "orderId" explicitly to match controller expectations
+      orderId: orderId,
       date: new Date().toISOString(),
       customer: {
         firstName: formData.firstName,
@@ -65,9 +67,37 @@ export default function Checkout() {
     }
 
     try {
+      // 1. Save to Database for admin tracking
       await addOrder(newOrder)
+
+      // 2. Prepare WhatsApp Message
+      const rawWhatsapp = cmsData.contact?.whatsapp || '233557786833'
+      const whatsappNumber = rawWhatsapp.replace(/\D/g, '')
+      
+      const itemLines = cart.map(item => `- ${item.name} x${item.quantity} (₵${(item.price * item.quantity).toFixed(2)})`).join('\n')
+      
+      const message = `📢 *NEW ORDER: ${orderId}*\n` +
+                      `----------------------------\n` +
+                      `👤 *Customer:* ${formData.firstName} ${formData.lastName}\n` +
+                      `📞 *Contact:* ${formData.phone}\n` +
+                      `📍 *Delivery:* ${formData.address}, ${formData.city}\n\n` +
+                      `🛍️ *Items:*\n${itemLines}\n\n` +
+                      `🚚 *Shipping:* ${shipping === 0 ? 'FREE' : `₵${shipping.toFixed(2)}`}\n` +
+                      `💳 *Payment:* ${formData.paymentMethod.toUpperCase()}\n` +
+                      `💰 *Total:* ₵${total.toFixed(2)}\n` +
+                      `----------------------------\n` +
+                      `Hello IkeNation! I just placed this order on the website and would like to confirm it.`
+
+      const encodedMessage = encodeURIComponent(message)
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`
+
+      // 3. Clear Cart and Redirect Locally
       clearCart()
-      navigate('/order-confirmation', { state: { orderId } })
+      
+      // 4. Open WhatsApp in new tab and navigate to confirmation
+      window.open(whatsappUrl, '_blank')
+      navigate('/order-confirmation', { state: { orderId, whatsappUrl } })
+      
     } catch (error) {
       console.error("Order failed:", error)
       alert("There was an issue processing your order. Please try again.")
@@ -386,9 +416,16 @@ export default function Checkout() {
                   <button
                     onClick={handlePlaceOrder}
                     disabled={isSubmitting}
-                    className={`flex-1 px-6 py-3 bg-black text-white rounded-lg font-semibold transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800'}`}
+                    className={`flex-1 px-6 py-3 bg-black text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-3 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800'}`}
                   >
-                    {isSubmitting ? 'Processing...' : 'Place Order'}
+                    {isSubmitting ? (
+                      'Processing...'
+                    ) : (
+                      <>
+                        <MessageCircle size={20} />
+                        Confirm Order on WhatsApp
+                      </>
+                    )}
                   </button>
                 )}
               </div>

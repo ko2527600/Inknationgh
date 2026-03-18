@@ -9,7 +9,7 @@ const initialData = {
     trustBar: [],
   },
   about: { story: 'IkeNation - Premium African Fashion', mission: 'Empower through style' },
-  contact: { email: 'hello@ikenation.com', phone: '+233 XXX XXX XXXX', location: 'Accra, Ghana', whatsapp: '233XXXXXXXXX' },
+  contact: { email: 'hello@ikenation.com', phone: '+233 55 778 6833', location: 'Accra, Ghana', whatsapp: '233557786833' },
   faq: { title: 'Frequently Asked Questions', items: [] },
   sizeGuide: { title: 'Size Guide', description: '', mensizes: [], womensizes: [], shoeSizes: [], tips: [] },
   privacy: {
