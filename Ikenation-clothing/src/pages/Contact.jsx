@@ -38,7 +38,7 @@ export default function Contact() {
 
     try {
       await axios.post(
-        `http://${window.location.hostname}:5000/api/messages`,
+        `${import.meta.env.VITE_API_URL}/messages`,
         {
           name: formData.name,
           email: formData.email,
