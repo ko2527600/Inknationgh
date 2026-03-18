@@ -13,6 +13,7 @@ export default function Customers() {
     const customerMap = new Map()
 
     orders.forEach((order) => {
+      if (!order.customer?.email) return;
       const email = order.customer.email.toLowerCase()
       if (customerMap.has(email)) {
         const existing = customerMap.get(email)
@@ -35,8 +36,8 @@ export default function Customers() {
 
   const filteredCustomers = customers.filter(
     (customer) =>
-      `${customer.firstName} ${customer.lastName}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+      `${customer.firstName || 'Unknown'} ${customer.lastName || 'Customer'}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (customer.email || '').toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
@@ -80,7 +81,7 @@ export default function Customers() {
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900">
-                      {customer.firstName} {customer.lastName}
+                      {customer.firstName || 'Unknown'} {customer.lastName || 'Customer'}
                     </h3>
                     <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                       <Mail size={14} />
@@ -97,8 +98,8 @@ export default function Customers() {
                   <p className="text-sm text-gray-600 flex items-start gap-2">
                     <MapPin size={16} className="text-gray-400 shrink-0 mt-0.5" />
                     <span>
-                      {customer.address}, {customer.city}<br />
-                      {customer.state}, {customer.country}
+                      {customer.address || 'No Address'}, {customer.city || ''}<br />
+                      {customer.state || ''}, {customer.country || ''}
                     </span>
                   </p>
                 </div>
