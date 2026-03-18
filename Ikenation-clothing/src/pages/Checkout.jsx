@@ -76,17 +76,16 @@ export default function Checkout() {
       
       const itemLines = cart.map(item => `- ${item.name} x${item.quantity} (₵${(item.price * item.quantity).toFixed(2)})`).join('\n')
       
-      const message = `📢 *NEW ORDER: ${orderId}*\n` +
+      const message = `🚨 *URGENT ORDER ALERT* 🚨\n` +
                       `----------------------------\n` +
-                      `👤 *Customer:* ${formData.firstName} ${formData.lastName}\n` +
-                      `📞 *Contact:* ${formData.phone}\n` +
-                      `📍 *Delivery:* ${formData.address}, ${formData.city}\n\n` +
-                      `🛍️ *Items:*\n${itemLines}\n\n` +
-                      `🚚 *Shipping:* ${shipping === 0 ? 'FREE' : `₵${shipping.toFixed(2)}`}\n` +
-                      `💳 *Payment:* ${formData.paymentMethod.toUpperCase()}\n` +
-                      `💰 *Total:* ₵${total.toFixed(2)}\n` +
+                      `📦 *Order ID:* ${orderId}\n` +
+                      `👤 *Name:* ${formData.firstName} ${formData.lastName}\n` +
+                      `💳 *Paid via:* ${formData.paymentMethod.toUpperCase()}\n` +
+                      `💰 *Amount:* ₵${total.toFixed(2)}\n\n` +
+                      `📍 *Location:* ${formData.city}, ${formData.address}\n\n` +
+                      `🛍️ *Items:* \n${itemLines}\n` +
                       `----------------------------\n` +
-                      `Hello IkeNation! I just placed this order on the website and would like to confirm it.`
+                      `Please check my payment and confirm delivery! Thank you.`
 
       const encodedMessage = encodeURIComponent(message)
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`
@@ -308,7 +307,7 @@ export default function Checkout() {
                     <div className="mt-6 pt-6 border-t border-gray-200 bg-green-50 p-4 rounded-lg">
                       <p className="text-sm text-gray-700">
                         <strong>Pay via Mobile Money (MoMo):</strong><br/><br/>
-                        1. Send <strong>₵{total.toFixed(2)}</strong> to <strong>054 123 4567</strong> (IkeNation Clothing).<br/>
+                        1. Send <strong>₵{total.toFixed(2)}</strong> to <strong>055 778 6833</strong> (Merchant: IkeNation Clothing).<br/>
                         2. Use your phone number as the reference.<br/>
                         3. Click "Place Order" below once payment is sent.
                       </p>
@@ -354,7 +353,7 @@ export default function Checkout() {
               {/* Step 3: Review */}
               {step === 3 && (
                 <div className="space-y-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Order Review</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">Final Confirmation</h2>
 
                   <div className="bg-gray-50 p-6 rounded-lg space-y-4">
                     <div>
@@ -362,19 +361,26 @@ export default function Checkout() {
                       <p className="text-gray-700">
                         {formData.firstName} {formData.lastName}<br/>
                         {formData.address}<br/>
-                        {formData.city}, {formData.state} {formData.zipCode}<br/>
-                        {formData.country}
+                        {formData.city}, {formData.state} {formData.zipCode}
                       </p>
                     </div>
 
                     <div className="border-t border-gray-200 pt-4">
-                      <h3 className="font-semibold text-gray-900 mb-2">Payment Method:</h3>
-                      <p className="text-gray-700 capitalize">
-                        {formData.paymentMethod === 'momo' && 'Mobile Money'}
-                        {formData.paymentMethod === 'card' && 'Credit/Debit Card'}
-                        {formData.paymentMethod === 'paypal' && 'PayPal'}
-                        {formData.paymentMethod === 'bank' && 'Bank Transfer'}
-                      </p>
+                      <h3 className="font-semibold text-gray-900 mb-2">Payment Instructions:</h3>
+                      {formData.paymentMethod === 'momo' ? (
+                        <div className="bg-green-100 p-4 rounded-lg border border-green-200">
+                           <p className="text-sm text-green-900">
+                             Please send <strong>₵{total.toFixed(2)}</strong> to <strong>055 778 6833</strong>.<br/>
+                             Confirm on WhatsApp after sending!
+                           </p>
+                        </div>
+                      ) : (
+                        <p className="text-gray-700 capitalize">
+                          {formData.paymentMethod === 'card' && 'Credit/Debit Card'}
+                          {formData.paymentMethod === 'paypal' && 'PayPal'}
+                          {formData.paymentMethod === 'bank' && 'Bank Transfer'}
+                        </p>
+                      )}
                     </div>
                   </div>
 
