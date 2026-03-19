@@ -50,7 +50,9 @@ axios.interceptors.response.use(
       // Token expired or invalid
       const { logout } = useAuthStore.getState();
       logout();
-      window.location.href = '/login';
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

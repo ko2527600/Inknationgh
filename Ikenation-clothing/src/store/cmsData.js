@@ -111,6 +111,9 @@ export const useCMSStore = create((set, get) => ({
         isLoading: false
       }));
     } catch (error) {
+      if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
+        return; // Silent return for cancelled requests
+      }
       console.error(`Error fetching CMS page ${pageName}:`, error);
       // Fallback to initialData if not found in DB yet
       set({ error: error.message, isLoading: false });

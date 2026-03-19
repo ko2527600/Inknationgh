@@ -14,6 +14,9 @@ export const useProductStore = create((set, get) => ({
       const response = await axios.get(API_URL);
       set({ products: response.data, isLoading: false });
     } catch (error) {
+      if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
+        return;
+      }
       console.error('Error fetching products:', error);
       set({ error: error.message, isLoading: false, products: [] });
     }

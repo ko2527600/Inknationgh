@@ -14,6 +14,9 @@ export const useOrderStore = create((set, get) => ({
       const response = await axios.get(API_URL);
       set({ orders: response.data, isLoading: false });
     } catch (error) {
+      if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
+        return;
+      }
       console.error('Error fetching orders:', error);
       set({ error: error.message, isLoading: false, orders: [] });
     }
