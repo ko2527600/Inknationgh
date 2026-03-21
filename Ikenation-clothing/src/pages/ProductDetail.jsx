@@ -115,7 +115,6 @@ export default function ProductDetail() {
                 <img
                   src={productImages[selectedImage]}
                   crossOrigin="anonymous"
-                  loading="lazy"
                   alt={product.name}
                   className={`w-full h-full object-cover transition-transform duration-300 ${
                     isZoomed ? 'scale-150' : 'scale-100'
@@ -147,7 +146,6 @@ export default function ProductDetail() {
                       <img
                         src={img}
                         crossOrigin="anonymous"
-                        loading="lazy"
                         alt={`View ${idx + 1}`}
                         className="w-full h-full object-cover"
                       />

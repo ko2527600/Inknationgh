@@ -64,16 +64,25 @@ export default function HeroCarousel() {
               className="absolute inset-0"
             >
               {/* Blurred Background Layer (for colors and atmosphere) */}
-              <div
-                className="absolute inset-0 bg-cover bg-center blur-2xl scale-125 opacity-60"
-                style={{ backgroundImage: `url(${slide.image})` }}
-              ></div>
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src={slide.image}
+                  alt=""
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover blur-2xl scale-125 opacity-60"
+                />
+              </div>
 
-              {/* Landscape Image Layer (forced constraints on mobile, full on desktop) */}
-              <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat mx-0"
-                style={{ backgroundImage: `url(${slide.image})` }}
-              ></div>
+              {/* Landscape Image Layer */}
+              <div className="absolute inset-0 overflow-hidden">
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  crossOrigin="anonymous"
+                  fetchPriority="high"
+                  className="w-full h-full object-cover"
+                />
+              </div>
 
               {/* Dark Overlay for Text Readability */}
               <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>

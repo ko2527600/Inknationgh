@@ -42,7 +42,6 @@ export default function ProductCard({ product }) {
           src={product.images?.length > 0 ? product.images[0] : product.image}
           alt={product.name}
           crossOrigin="anonymous"
-          loading="lazy"
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
 
