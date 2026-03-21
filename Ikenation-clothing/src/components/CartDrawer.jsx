@@ -108,6 +108,8 @@ export default function CartDrawer() {
                         <img
                           src={item.image}
                           alt={item.name}
+                          crossOrigin="anonymous"
+                          loading="lazy"
                           className="w-full h-full object-cover"
                         />
                       </div>
