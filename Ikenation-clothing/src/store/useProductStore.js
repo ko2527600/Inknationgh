@@ -9,15 +9,18 @@ export const useProductStore = create((set, get) => ({
   error: null,
 
   fetchProducts: async () => {
+    console.log('[ProductStore] Starting fetchProducts...');
     set({ isLoading: true, error: null });
     try {
       const response = await axios.get(API_URL);
+      console.log('[ProductStore] Fetch successful. Products received:', response.data?.length);
       set({ products: response.data, isLoading: false });
     } catch (error) {
       if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
+        console.log('[ProductStore] Fetch cancelled');
         return;
       }
-      console.error('Error fetching products:', error);
+      console.error('[ProductStore] Error fetching products:', error);
       set({ error: error.message, isLoading: false, products: [] });
     }
   },

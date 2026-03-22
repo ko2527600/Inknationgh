@@ -11,9 +11,6 @@ export default function HeroCarousel() {
 
   const slides = useMemo(() => cmsData?.home?.heroSlides || [], [cmsData?.home?.heroSlides])
 
-  // Debug: Log slides
-  console.log('HeroCarousel slides:', slides)
-
   useEffect(() => {
     if (!slides || slides.length === 0) return
 
